@@ -9,6 +9,7 @@ class Dataset:
     def load_data(self, file, headers:bool=False):
         with open(file, 'r', newline='') as file_reader:
             for linia in file_reader:
+                    linia = linia.split(',')
                     self.data_list.append(linia)
 
         if headers == True:
@@ -60,7 +61,6 @@ class Dataset:
             while self.counter < round(len(self.data_list)*test/100):
                 self.random_index = random.randint(0, len(self.data_list)-1)
                 if self.random_index not in self.wykorzystane_indeksy:
-                    print(self.random_index)
                     self.zbior_testowy.append(self.data_list[self.random_index])
                     self.wykorzystane_indeksy.append(self.random_index)
                     self.counter += 1
@@ -74,17 +74,28 @@ class Dataset:
                     self.wykorzystane_indeksy.append(self.random_index)
                     self.counter += 1
 
+    def get_klasy_decyzyjne(self,index):
+        self.unikalne_klasy = {}
+
+        for linia in self.data_list:
+            if linia[index] not in self.unikalne_klasy:
+                self.unikalne_klasy[linia[index]] = 1
+            else:
+                self.unikalne_klasy[linia[index]] += 1
+
+        for k, v in self.unikalne_klasy.items():
+            print((k,v))
+
+
 
 
 d1 = Dataset()
 d1.load_data('car.data', False)
+print(d1.data_list)
 d1.get_headers()
 # d1.get_data(10,20)
-d1.split_data(15,30,60)
-print('zbior treningowy',len(d1.zbior_treningowy))
-print(d1.wykorzystane_indeksy)
-print('zbior testowy', len(d1.zbior_testowy))
-print(d1.wykorzystane_indeksy)
-print('zbior walidacyjny', len(d1.zbior_walidacyjny))
-print(d1.wykorzystane_indeksy)
-print(len(d1.data_list))
+d1.split_data(15,30,20)
+d1.get_klasy_decyzyjne(6)
+
+
+

@@ -2,14 +2,14 @@ import random
 
 class Dataset:
 
-    def __init__(self):
+    def __init__(self, file, kolumna_decyzyjna, headers:bool=False, ):
         self.data_list = []
         self.headers = []
+        self.kolumna_decyzyjna = kolumna_decyzyjna
 
-    def load_data(self, file, headers:bool=False):
         with open(file, 'r', newline='') as file_reader:
             for linia in file_reader:
-                    linia = linia.split(',')
+                    linia = linia.rstrip('\n').split(',')
                     self.data_list.append(linia)
 
         if headers == True:
@@ -74,28 +74,32 @@ class Dataset:
                     self.wykorzystane_indeksy.append(self.random_index)
                     self.counter += 1
 
-    def get_klasy_decyzyjne(self,index):
+    def get_klasy_decyzyjne(self):
         self.unikalne_klasy = {}
 
         for linia in self.data_list:
-            if linia[index] not in self.unikalne_klasy:
-                self.unikalne_klasy[linia[index]] = 1
+            if linia[self.kolumna_decyzyjna] not in self.unikalne_klasy:
+                self.unikalne_klasy[linia[self.kolumna_decyzyjna]] = 1
             else:
-                self.unikalne_klasy[linia[index]] += 1
+                self.unikalne_klasy[linia[self.kolumna_decyzyjna]] += 1
 
         for k, v in self.unikalne_klasy.items():
             print((k,v))
 
+    def get_rows(self, value):
+        for linia in self.data_list:
+            if linia[self.kolumna_decyzyjna] == value:
+                print(linia)
 
 
 
-d1 = Dataset()
-d1.load_data('car.data', False)
+d1 = Dataset('car.data', 6)
 print(d1.data_list)
 d1.get_headers()
 # d1.get_data(10,20)
 d1.split_data(15,30,20)
-d1.get_klasy_decyzyjne(6)
+d1.get_klasy_decyzyjne()
+d1.get_rows('good')
 
 
 
